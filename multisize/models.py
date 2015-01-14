@@ -13,6 +13,8 @@ class ResizedImage(models.Model):
     source_id = models.IntegerField()
     width = models.IntegerField()
     height = models.IntegerField()
+    actual_width = models.IntegerField(blank=True, null=True)
+    actual_height = models.IntegerField(blank=True, null=True)
     format = models.IntegerField(
         choices = resources.FORMAT_CHOICES,
         default = resources.DEFAULT_FORMAT,
@@ -55,4 +57,6 @@ class ResizedImage(models.Model):
                 raise e
             finally:
                 f.close()
+        self.actual_width = p.size[0]
+        self.actual_height = p.size[1]
         self.save()
