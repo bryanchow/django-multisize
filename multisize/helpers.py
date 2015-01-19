@@ -21,7 +21,11 @@ def make_resized_image(source_instance,
     )
 
     # TODO: Remove old data
-    instance.make_image(getattr(source_instance, source_field_name))
+
+    source_image = getattr(source_instance, source_field_name)
+    source_image.open() # https://code.djangoproject.com/ticket/13750
+
+    instance.make_image(source_image)
     return instance
 
 
