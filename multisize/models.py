@@ -1,5 +1,5 @@
 from cStringIO import StringIO
-from PIL import Image
+from PIL import Image, ImageOps
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
@@ -45,7 +45,15 @@ class ResizedImage(models.Model):
         else:
             try:
                 f = StringIO()
-                p.thumbnail((self.width, self.height), Image.ANTIALIAS)
+                if self.should_crop:
+                    p = ImageOps.fit(
+                        image = p,
+                        size = (self.width, self.height),
+                        method = Image.ANTIALIAS,
+                        centering = (0.5, 0.5),
+                    )
+                else:
+                    p.thumbnail((self.width, self.height), Image.ANTIALIAS)
                 p.save(
                     f,
                     format=resources.get_format(self.format),

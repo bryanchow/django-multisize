@@ -10,7 +10,8 @@ def get_type_for_instance(instance):
 def make_resized_image(source_instance,
                        source_field_name,
                        width,
-                       height):
+                       height,
+                       should_crop=False):
 
     instance, created = ResizedImage.objects.get_or_create(
         source_type = get_type_for_instance(source_instance),
@@ -18,6 +19,7 @@ def make_resized_image(source_instance,
         source_id = source_instance.id,
         width = width,
         height = height,
+        should_crop = should_crop,
     )
 
     # TODO: Remove old data
@@ -32,7 +34,8 @@ def make_resized_image(source_instance,
 def get_resized_image(source_instance,
                       source_field_name,
                       width,
-                      height):
+                      height,
+                      should_crop=False):
     try:
         return ResizedImage.objects.get(
             source_type = get_type_for_instance(source_instance),
@@ -40,6 +43,7 @@ def get_resized_image(source_instance,
             source_id = source_instance.id,
             width = width,
             height = height,
+            should_crop = should_crop,
         )
     except ResizedImage.DoesNotExist:
         pass
