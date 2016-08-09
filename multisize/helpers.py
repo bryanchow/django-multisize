@@ -61,3 +61,28 @@ def remove_resized_images(source_instance,
         source_field_name = source_field_name,
         source_id = source_instance.id,
     ).delete()
+
+
+def resize_image_for_model(instance,
+                           source_field_name,
+                           width,
+                           height,
+                           should_crop=False):
+
+    if instance.image:
+        image = get_resized_image(
+            source_instance = instance,
+            source_field_name = source_field_name,
+            width = width,
+            height = height,
+            should_crop = should_crop,
+        )
+        if not image:
+            image = make_resized_image(
+                source_instance = instance,
+                source_field_name = source_field_name,
+                width = width,
+                height = height,
+                should_crop = should_crop,
+            )
+        return image
