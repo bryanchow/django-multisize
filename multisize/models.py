@@ -1,8 +1,10 @@
+import os
 from cStringIO import StringIO
 from PIL import Image, ImageOps
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
+from django.dispatch import receiver
 from . import resources
 
 
@@ -68,3 +70,11 @@ class ResizedImage(models.Model):
         self.actual_width = p.size[0]
         self.actual_height = p.size[1]
         self.save()
+
+
+@receiver(models.signals.post_delete, sender=ResizedImage)
+def deleted_image_file(sender, instance, **kwargs):
+
+    if instance.image:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)
