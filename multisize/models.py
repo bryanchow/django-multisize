@@ -23,6 +23,8 @@ class ResizedImage(models.Model):
     )
     quality = models.IntegerField(blank=True, null=True)
     should_crop = models.BooleanField(default=False)
+    crop_origin_x = models.FloatField(blank=True, null=True)
+    crop_origin_y = models.FloatField(blank=True, null=True)
 
     image = models.FileField(
         upload_to = "resized/",
@@ -48,11 +50,19 @@ class ResizedImage(models.Model):
             try:
                 f = StringIO()
                 if self.should_crop:
+                    crop_origin_x = (
+                        0.5 if self.crop_origin_x is None
+                        else self.crop_origin_x
+                    )
+                    crop_origin_y = (
+                        0.5 if self.crop_origin_y is None
+                        else self.crop_origin_y
+                    )
                     p = ImageOps.fit(
                         image = p,
                         size = (self.width, self.height),
                         method = Image.ANTIALIAS,
-                        centering = (0.5, 0.5),
+                        centering = (crop_origin_x, crop_origin_y),
                     )
                 else:
                     p.thumbnail((self.width, self.height), Image.ANTIALIAS)
