@@ -66,7 +66,7 @@ class ResizedImage(models.Model):
                     )
                 else:
                     p.thumbnail((self.width, self.height), Image.ANTIALIAS)
-                p.save(
+                p.convert('RGB').save(
                     f,
                     format=resources.get_format(self.format),
                     quality=self.quality or resources.DEFAULT_JPEG_QUALITY,
