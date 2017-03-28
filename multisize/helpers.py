@@ -76,7 +76,7 @@ def resize_image_for_model(instance,
                            crop_origin_x=None,
                            crop_origin_y=None):
 
-    if instance.image:
+    if getattr(instance, source_field_name):
         image = get_resized_image(
             source_instance = instance,
             source_field_name = source_field_name,
